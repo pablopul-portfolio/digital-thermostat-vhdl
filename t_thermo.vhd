@@ -10,6 +10,7 @@ architecture TEST of T_THERMO is
 	DISPLAY_SELECT : in bit; 
 	COOL           : in bit;
 	HEAT           : in bit;
+	CLK            : in bit;
 
 	TEMP_DISPLAY   : out bit_vector (6 downto 0);
 	A_C_ON         : out bit;
@@ -21,9 +22,13 @@ signal CURRENT_TEMP, DESIRED_TEMP     : bit_vector(6 downto 0);
 signal DISPLAY_SELECT                 : bit;
 signal TEMP_DISPLAY                   : bit_vector(6 downto 0);
 signal COOL, HEAT, A_C_ON, FURNACE_ON : bit;
+signal CLK                            : BIT;
 
 
 begin
+
+ CLK <= not CLK after 5 ns;
+
  UUT: THERMO port map ( CURRENT_TEMP => CURRENT_TEMP,
 		   DESIRED_TEMP => DESIRED_TEMP,
 		   DISPLAY_SELECT => DISPLAY_SELECT,
@@ -31,7 +36,8 @@ begin
 		   A_C_ON => A_C_ON,
 		   HEAT => HEAT,
 		   COOL => COOL,
-		   FURNACE_ON => FURNACE_ON);
+		   FURNACE_ON => FURNACE_ON,
+		   CLK => CLK);
 
 process
  begin
@@ -39,20 +45,20 @@ process
  CURRENT_TEMP <= "0000000";
  DESIRED_TEMP <= "1111111";
  DISPLAY_SELECT <= '0';
- wait for 10 ns;
+ wait for 50 ns;
  DISPLAY_SELECT <= '1';
- wait for 10 ns;
+ wait for 50 ns;
  HEAT <= '1';
- wait for 10 ns;
+ wait for 50 ns;
  HEAT <= '0';
- wait for 10 ns;
+ wait for 50 ns;
  CURRENT_TEMP <= "1000000";
  DESIRED_TEMP <= "0100000";
- wait for 10 ns;
+ wait for 50 ns;
  COOL <= '1';
- wait for 10 ns;
+ wait for 50 ns;
  COOL <= '0';
- wait for 10 ns;
+ wait for 50 ns;
 
  wait;
  end process;
