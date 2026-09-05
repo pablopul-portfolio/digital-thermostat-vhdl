@@ -1,30 +1,31 @@
-
--- The thermostat works with a MUX
+Library IEEE;
+use IEEE.STD_LOGIC_1164.all;
 
 entity THERMO is
- port ( CURRENT_TEMP   : in bit_vector(6 downto 0);
-	DESIRED_TEMP   : in bit_vector(6 downto 0);
-	DISPLAY_SELECT : in bit; 
-	COOL           : in bit;
-	HEAT           : in bit;
-	CLK	       : in bit;
+ port ( CURRENT_TEMP   : in std_logic_vector(6 downto 0);
+	DESIRED_TEMP   : in std_logic_vector(6 downto 0);
+	DISPLAY_SELECT : in std_logic; 
+	COOL           : in std_logic;
+	HEAT           : in std_logic;
+	CLK	       : in std_logic;
 
-	TEMP_DISPLAY   : out bit_vector (6 downto 0);
-	A_C_ON         : out bit;
-	FURNACE_ON     : out bit
+	TEMP_DISPLAY   : out std_logic_vector (6 downto 0);
+	A_C_ON         : out std_logic;
+	FURNACE_ON     : out std_logic;
+	
  );
  end THERMO;
 
 architecture RTL of THERMO is
 
- signal CURRENT_TEMP_REG   : bit_vector(6 downto 0);
- signal DESIRED_TEMP_REG   : bit_vector(6 downto 0);
- signal DISPLAY_SELECT_REG : bit; 
- signal COOL_REG           : bit;
- signal HEAT_REG           : bit;
- signal TEMP_DISPLAY_REG   : bit_vector(6 downto 0);
- signal A_C_ON_REG    : bit;
- signal FURNACE_ON_REG     : bit;
+ signal CURRENT_TEMP_REG   : std_logic_vector(6 downto 0);
+ signal DESIRED_TEMP_REG   : std_logic_vector(6 downto 0);
+ signal DISPLAY_SELECT_REG : std_logic; 
+ signal COOL_REG           : std_logic;
+ signal HEAT_REG           : std_logic;
+ signal TEMP_DISPLAY_REG   : std_logic_vector(6 downto 0);
+ signal A_C_ON_REG         : std_logic;
+ signal FURNACE_ON_REG     : std_logic;
 
 begin
  
