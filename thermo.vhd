@@ -1,5 +1,6 @@
 Library IEEE;
-use IEEE.STD_LOGIC_1164.all;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 
 entity THERMO is
  port ( CURRENT_TEMP   : in std_logic_vector(6 downto 0);
@@ -36,6 +37,8 @@ architecture RTL of THERMO is
  signal FURNACE_HOT_REG    : std_logic;
  signal AC_READY_REG       : std_logic;
  signal FAN_ON_REG         : std_logic;
+
+ signal COUNTER		   : unsigned (4 downto 0);
 
 begin
  
@@ -79,7 +82,20 @@ STM_CLK: process(CLK)
    end if;
  end process;
 
-STM_LOGIC: process(CURRENT_STATE, HEAT_REG, COOL_REG, CURRENT_TEMP_REG, DESIRED_TEMP_REG, FURNACE_HOT_REG, AC_READY_REG)    -- process for the logic of the state machine
+COUNTDOWN: process(CLK)
+ begin
+  if CLK'EVENT and CLK = '1' then
+    if CURRENT_STATE = FURNACENOWHOT then
+      COUNTER <= "01010";
+    elsif CURRENT_STATE = ACNOWREADY then 
+      COUNTER <= "10100";
+    elsif NEXT_STATE = FURNACECOOL or NEXT_STATE = ACDONE then
+      COUNTER <= COUNTER - 1;
+    end if;
+  end if;
+end process;
+
+STM_LOGIC: process(CURRENT_STATE, HEAT_REG, COOL_REG, CURRENT_TEMP_REG, DESIRED_TEMP_REG, FURNACE_HOT_REG, AC_READY_REG, COUNTER)    -- process for the logic of the state machine
  begin
    case CURRENT_STATE is
      when IDLE =>
@@ -106,7 +122,7 @@ STM_LOGIC: process(CURRENT_STATE, HEAT_REG, COOL_REG, CURRENT_TEMP_REG, DESIRED_
        end if;
 
      when FURNACECOOL =>
-       if FURNACE_HOT_REG = '0' then 
+       if FURNACE_HOT_REG = '0' and COUNTER = "00000" then 
          NEXT_STATE <= IDLE;
        else
 	 NEXT_STATE <= FURNACECOOL;
@@ -127,7 +143,7 @@ STM_LOGIC: process(CURRENT_STATE, HEAT_REG, COOL_REG, CURRENT_TEMP_REG, DESIRED_
        end if;
 
      when ACDONE =>
-       if AC_READY_REG = '0' then
+       if AC_READY_REG = '0' and COUNTER = "00000" then
 	 NEXT_STATE <= IDLE;
        else
 	 NEXT_STATE <= ACDONE;
