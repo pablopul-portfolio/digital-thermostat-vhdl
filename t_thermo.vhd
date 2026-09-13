@@ -51,11 +51,19 @@ begin
 
 process
  begin
- 
+
+ report "starting the therm simulation";
+
  CURRENT_TEMP <= "0000000";
  DESIRED_TEMP <= "1111111";
+ FURNACE_HOT <= '0';
+ AC_READY <= '0';
+ HEAT <= '0';
+ COOL <= '0';
  DISPLAY_SELECT <= '0';
  wait for 50 ns;
+ assert TEMP_DISPLAY = DESIRED_TEMP report "temp display error, should have been the desired one";
+
  DISPLAY_SELECT <= '1';
  wait for 50 ns;
  HEAT <= '1';
